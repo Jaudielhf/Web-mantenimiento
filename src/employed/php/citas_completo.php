@@ -2,7 +2,8 @@
 require_once "./superior.php";
 require_once "../../MYSQL/conexion.php";
 
-$sql = "SELECT 
+
+    $sql = "SELECT 
         c.id_cita,
         c.horario AS hora,
         c.fecha AS fechas,  
@@ -27,11 +28,16 @@ $sql = "SELECT
         mantenimiento.usuarios AS u ON c.id_usuario = u.id_usuario
     JOIN 
         mantenimiento.empleados AS e ON c.id_empleado = e.id_empleado
+    WHERE 
+    e.username = '$username'
     ORDER BY 
         c.descripcion DESC 
     LIMIT 1000";
 
-$resultado = mysqli_query($conn, $sql);
+    // Ejecutar consulta SQL
+    $resultado = mysqli_query($conn, $sql);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -41,17 +47,19 @@ $resultado = mysqli_query($conn, $sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Citas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="./../../../bootstrap-5.3.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="./../../../bootstrap-5.3.3-dist/js/bootstrap.bundle.js"></script>
 </head>
 
 <body>
+
     <div class="container mt-4">
         <h1>VENTANA DE ADMINISTRACION DE CITAS</h1>
         <div class="row">
             <div class="col-md-6">
-                <nav class="navbar bg-body-tertiary">
+                <nav class="bg-body-tertiary">
                     <div class="container-fluid">
                         <form class="d-flex" method="post" action="citas.php">
                             <input class="form-control me-2" type="search" placeholder="Buscar por ID de Cita o Fecha" aria-label="Search" name="buscar">
@@ -101,16 +109,11 @@ $resultado = mysqli_query($conn, $sql);
                                 echo "<td>";
                                 echo "<form method='post' action='confirmar_cita.php'>";
                                 echo "<input type='hidden' name='id_cita' value='" . $fila['id_cita'] . "'>";
-                                echo "<button type='submit' name='confirmar_cita' id='confirmar_" . $fila['id_cita'] . "' class='btn btn-success confirmar-btn'>";
-                                echo "<i class='fas fa-check'></i>";
-                                echo "</button>";
+                                echo "<button type='submit' name='confirmar_cita' class='btn btn-success'>Confirmar</button>";
                                 echo "</form>";
-
                                 echo "<form method='post' action='eliminar_cita.php'>";
                                 echo "<input type='hidden' name='id_cita' value='" . $fila['id_cita'] . "'>";
-                                echo "<button type='submit' name='eliminar_cita' class='btn btn-danger eliminar mb-2' onclick='return confirm(\"¿Estás seguro de eliminar esta cita?\");'>";
-                                echo "<i class='fas fa-trash-alt'></i>";
-                                echo "</button>";
+                                echo "<button type='submit' name='eliminar_cita' class='btn btn-danger eliminar mb-2' onclick='return confirm(\"¿Estás seguro de eliminar esta cita?\");'>Eliminar</button>";
                                 echo "</form>";
                                 echo "</td>";
                                 echo "</tr>";
@@ -124,18 +127,12 @@ $resultado = mysqli_query($conn, $sql);
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const confirmButtons = document.querySelectorAll('.confirmar-btn');
-
-            confirmButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    button.style.display = 'none';
-                });
-            });
-        });
-    </script>
+    <div class="footer">
+    <?php
+    require_once "./inferior.php";
+    ?>
+    </div>
+   
 </body>
 
 </html>
